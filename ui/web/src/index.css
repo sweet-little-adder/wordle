@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-wordle-dark text-white font-sans;
+  }
+}
+
+@layer components {
+  .wordle-tile {
+    @apply w-14 h-14 border-2 border-gray-400 flex items-center justify-center text-2xl font-bold uppercase transition-all duration-200;
+  }
+  
+  .wordle-tile.filled {
+    @apply border-gray-600 bg-white text-black;
+  }
+  
+  .wordle-tile.correct {
+    @apply bg-wordle-green border-wordle-green text-white;
+  }
+  
+  .wordle-tile.present {
+    @apply bg-wordle-yellow border-wordle-yellow text-white;
+  }
+  
+  .wordle-tile.absent {
+    @apply bg-wordle-gray border-wordle-gray text-white;
+  }
+  
+  .keyboard-key {
+    @apply px-3 py-4 bg-gray-300 text-gray-800 font-semibold rounded-md hover:bg-gray-400 transition-colors duration-150 cursor-pointer select-none;
+  }
+  
+  .keyboard-key.correct {
+    @apply bg-wordle-green text-white;
+  }
+  
+  .keyboard-key.present {
+    @apply bg-wordle-yellow text-white;
+  }
+  
+  .keyboard-key.absent {
+    @apply bg-wordle-gray text-white;
+  }
+} 

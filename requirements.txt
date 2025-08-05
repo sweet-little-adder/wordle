@@ -1,0 +1,6 @@
+# Python dependencies for the Wordle project
+# No external dependencies required for basic functionality
+
+# Optional dependencies for future features
+# flask>=2.0.0  # For server/client mode
+# pytest>=6.0.0  # For testing 
