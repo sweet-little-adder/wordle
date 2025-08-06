@@ -26,9 +26,7 @@ const Header = () => {
                 E
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-white ml-4">
-              Multi-Mode Edition
-            </h1>
+        
           </div>
         </div>
       </div>

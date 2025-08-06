@@ -7,11 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        'wordle-green': '#6aaa64',
-        'wordle-yellow': '#c9b458',
-        'wordle-gray': '#787c7e',
-        'wordle-dark': '#121213',
-        'wordle-light': '#d3d6da',
+        'wordle-green': '#ec4899', // Pink-500 for correct letters
+        'wordle-yellow': '#f472b6', // Pink-400 for present letters  
+        'wordle-gray': '#787c7e', // Keep gray for absent letters
+        'wordle-dark': '#1f1f23', // Slightly lighter dark background
+        'wordle-light': '#fdf2f8', // Pink-50 for light elements
       },
       animation: {
         'bounce-in': 'bounceIn 0.6s ease-out',

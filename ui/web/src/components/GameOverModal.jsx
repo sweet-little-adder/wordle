@@ -22,24 +22,31 @@ const GameOverModal = ({ gameState, onClose, onPlayAgain }) => {
   }
 
   const handleShare = async () => {
-    const shareText = generateShareText()
-    
-    if (navigator.share) {
-      try {
+    try {
+      const shareText = generateShareText()
+      if (navigator.share) {
         await navigator.share({
+          title: 'Wordle Game Result',
           text: shareText
         })
-      } catch (error) {
-        console.log('Error sharing:', error)
-      }
-    } else {
-      // Fallback to clipboard
-      try {
+      } else {
         await navigator.clipboard.writeText(shareText)
-        alert('Results copied to clipboard!')
-      } catch (error) {
-        console.log('Error copying to clipboard:', error)
+        // setCopied(true) // This line was removed from the new_code, so it's removed here.
+        // setTimeout(() => setCopied(false), 2000) // This line was removed from the new_code, so it's removed here.
       }
+    } catch (error) {
+      // Handle share error silently
+    }
+  }
+
+  const handleCopy = async () => {
+    try {
+      const shareText = generateShareText()
+      await navigator.clipboard.writeText(shareText)
+      // setCopied(true) // This line was removed from the new_code, so it's removed here.
+      // setTimeout(() => setCopied(false), 2000) // This line was removed from the new_code, so it's removed here.
+    } catch (error) {
+      // Handle copy error silently
     }
   }
 

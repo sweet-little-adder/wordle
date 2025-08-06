@@ -5,43 +5,80 @@
 @layer base {
   body {
     @apply bg-wordle-dark text-white font-sans;
+    background: linear-gradient(135deg, #1f1f23 0%, #2d1b3d 100%);
   }
 }
 
 @layer components {
   .wordle-tile {
-    @apply w-14 h-14 border-2 border-gray-400 flex items-center justify-center text-2xl font-bold uppercase transition-all duration-200;
+    @apply w-14 h-14 border border-gray-400 flex items-center justify-center text-2xl font-bold uppercase transition-all duration-200 rounded-lg;
+    background: linear-gradient(145deg, #2a2a2e, #1f1f23);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   
   .wordle-tile.filled {
-    @apply border-gray-600 bg-white text-black;
+    @apply border-gray-600 bg-white text-black rounded-lg;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   
   .wordle-tile.correct {
-    @apply bg-wordle-green border-wordle-green text-white;
+    @apply bg-wordle-green border-wordle-green text-white rounded-lg;
+    background: linear-gradient(145deg, #ec4899, #db2777);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
   }
   
   .wordle-tile.present {
-    @apply bg-wordle-yellow border-wordle-yellow text-white;
+    @apply bg-wordle-yellow border-wordle-yellow text-white rounded-lg;
+    background: linear-gradient(145deg, #f472b6, #ec4899);
+    box-shadow: 0 4px 12px rgba(244, 114, 182, 0.4);
   }
   
   .wordle-tile.absent {
-    @apply bg-wordle-gray border-wordle-gray text-white;
+    @apply bg-wordle-gray border-wordle-gray text-white rounded-lg;
+    background: linear-gradient(145deg, #787c7e, #6b7280);
+    box-shadow: 0 4px 12px rgba(120, 124, 126, 0.4);
   }
   
   .keyboard-key {
     @apply px-3 py-4 bg-gray-300 text-gray-800 font-semibold rounded-md hover:bg-gray-400 transition-colors duration-150 cursor-pointer select-none;
+    background: linear-gradient(145deg, #e5e7eb, #d1d5db);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .keyboard-key:hover {
+    background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
   
   .keyboard-key.correct {
     @apply bg-wordle-green text-white;
+    background: linear-gradient(145deg, #ec4899, #db2777);
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
   }
   
   .keyboard-key.present {
     @apply bg-wordle-yellow text-white;
+    background: linear-gradient(145deg, #f472b6, #ec4899);
+    box-shadow: 0 2px 8px rgba(244, 114, 182, 0.3);
   }
   
   .keyboard-key.absent {
     @apply bg-wordle-gray text-white;
+    background: linear-gradient(145deg, #787c7e, #6b7280);
+    box-shadow: 0 2px 8px rgba(120, 124, 126, 0.3);
+  }
+}
+
+@layer utilities {
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+  }
+  
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
   }
 } 

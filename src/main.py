@@ -17,6 +17,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core.game_engine import LetterResult
 from game_modes.single_player import SinglePlayerGame
 from game_modes.cheating_host import CheatingHostGame
+from game_modes.server_client import ServerGame, ClientGame
+from game_modes.multiplayer import MultiplayerGame
 from utils.word_loader import get_default_word_list
 from ui.text_ui import TextUI
 
@@ -98,19 +100,65 @@ def create_game_mode(args, word_list: List[str]):
     elif args.mode == 'cheating':
         return CheatingHostGame(word_list, args.max_rounds)
     elif args.mode == 'server':
-        # TODO: Implement server mode
-        print("Server mode not yet implemented")
-        sys.exit(1)
+        return ServerGame(word_list, args.max_rounds, args.port)
     elif args.mode == 'client':
-        # TODO: Implement client mode
-        print("Client mode not yet implemented")
-        sys.exit(1)
+        server_url = f"http://{args.host}:{args.port}"
+        return ClientGame(word_list, args.max_rounds, server_url)
     elif args.mode == 'multiplayer':
-        # TODO: Implement multiplayer mode
-        print("Multiplayer mode not yet implemented")
-        sys.exit(1)
+        return MultiplayerGame(word_list, args.max_rounds, args.players)
     else:
         raise ValueError(f"Unknown game mode: {args.mode}")
+
+
+def run_server_mode(game: ServerGame, args):
+    """Run the server mode."""
+    print(f"🚀 Starting Wordle server on port {args.port}")
+    print(f"📊 Server will be available at http://localhost:{args.port}")
+    print("Press Ctrl+C to stop the server")
+    
+    try:
+        game.start_server(host='0.0.0.0', debug=True)
+    except KeyboardInterrupt:
+        print("\n🛑 Server stopped by user")
+
+
+def run_client_mode(game: ClientGame, args):
+    """Run the client mode."""
+    print(f"🔗 Connecting to server at http://{args.host}:{args.port}")
+    
+    try:
+        # Start a game
+        game.start_game(mode='single')
+        print("✅ Connected to server successfully")
+        
+        # Create UI and run game
+        ui = TextUI()
+        ui.run_game(game)
+        
+    except Exception as e:
+        print(f"❌ Failed to connect to server: {e}")
+        print("Make sure the server is running first with: python src/main.py --mode server")
+
+
+def run_multiplayer_mode(game: MultiplayerGame, args):
+    """Run the multiplayer mode."""
+    print(f"🎮 Starting multiplayer game with {args.players} players")
+    print("This is a text-based multiplayer mode.")
+    print("Players will take turns making guesses.")
+    
+    # Add players
+    for i in range(args.players):
+        player_id = f"player_{i+1}"
+        player_name = f"Player {i+1}"
+        result = game.add_player(player_id, player_name)
+        print(f"✅ {result['message']}")
+    
+    # Start the game
+    game.start_game()
+    
+    # Create UI and run game
+    ui = TextUI()
+    ui.run_multiplayer_game(game)
 
 
 def main():
@@ -120,28 +168,36 @@ def main():
     try:
         # Load word list
         word_list = load_word_list(args)
-        print(f"Loaded {len(word_list)} words")
+        print(f"📚 Loaded {len(word_list)} words")
         
         # Create game mode
         game = create_game_mode(args, word_list)
         
-        # Create UI
-        ui = TextUI()
-        
-        # Start game
-        if args.mode == 'single':
-            game.start_game(answer=args.answer)
-        elif args.mode == 'cheating':
-            game.start_game()
-        
-        # Run the game
-        ui.run_game(game)
+        # Run appropriate mode
+        if args.mode == 'server':
+            run_server_mode(game, args)
+        elif args.mode == 'client':
+            run_client_mode(game, args)
+        elif args.mode == 'multiplayer':
+            run_multiplayer_mode(game, args)
+        else:
+            # Single player or cheating mode
+            ui = TextUI()
+            
+            # Start game
+            if args.mode == 'single':
+                game.start_game(answer=args.answer)
+            elif args.mode == 'cheating':
+                game.start_game()
+            
+            # Run the game
+            ui.run_game(game)
         
     except KeyboardInterrupt:
-        print("\nGame interrupted by user")
+        print("\n🛑 Game interrupted by user")
         sys.exit(0)
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌ Error: {e}")
         sys.exit(1)
 
 

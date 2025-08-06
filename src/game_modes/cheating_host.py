@@ -2,13 +2,14 @@
 Cheating host Wordle game mode.
 
 This module implements the cheating host Wordle game as described in Task 3.
-The host adapts the answer based on player guesses to make the game more challenging.
+The host adapts the answer based on the player's guesses to make the game harder.
 """
 
-from typing import List, Dict, Any, Optional, Tuple
-from .base_game_mode import BaseGameMode
-from ..core.game_engine import LetterResult, GameState
-from ..utils.word_loader import filter_words_by_pattern
+import random
+from typing import List, Dict, Any, Optional, Set
+from base_game_mode import BaseGameMode
+from core.game_engine import LetterResult, GameState
+from utils.word_loader import filter_words_by_pattern
 
 
 class CheatingHostGame(BaseGameMode):

@@ -1,73 +1,69 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
-// Default word list for demo purposes
-const DEFAULT_WORDS = [
-  'ABOUT', 'ABOVE', 'ABUSE', 'ACTOR', 'ACUTE', 'ADMIT', 'ADOPT', 'ADULT',
-  'AFTER', 'AGAIN', 'AGENT', 'AGREE', 'AHEAD', 'ALARM', 'ALBUM', 'ALERT',
-  'ALIKE', 'ALIVE', 'ALLOW', 'ALONE', 'ALONG', 'ALTER', 'AMONG', 'ANGER',
-  'ANGLE', 'ANGRY', 'APART', 'APPLE', 'APPLY', 'ARENA', 'ARGUE', 'ARISE',
-  'ARRAY', 'ASIDE', 'ASSET', 'AUDIO', 'AUDIT', 'AVOID', 'AWARD', 'AWARE',
-  'BADLY', 'BAKER', 'BASES', 'BASIC', 'BASIS', 'BEACH', 'BEGAN', 'BEGIN',
-  'BEING', 'BELOW', 'BENCH', 'BILLY', 'BIRTH', 'BLACK', 'BLAME', 'BLIND',
-  'BLOCK', 'BLOOD', 'BOARD', 'BOOST', 'BOOTH', 'BOUND', 'BRAIN', 'BRAND',
-  'BREAD', 'BREAK', 'BREED', 'BRIEF', 'BRING', 'BROAD', 'BROKE', 'BROWN',
-  'BUILD', 'BUILT', 'BUYER', 'CABLE', 'CALIF', 'CARRY', 'CATCH', 'CAUSE',
-  'CHAIN', 'CHAIR', 'CHART', 'CHASE', 'CHEAP', 'CHECK', 'CHEST', 'CHIEF',
-  'CHILD', 'CHINA', 'CHOSE', 'CIVIL', 'CLAIM', 'CLASS', 'CLEAN', 'CLEAR',
-  'CLICK', 'CLIMB', 'CLOCK', 'CLOSE', 'COACH', 'COAST', 'COULD', 'COUNT',
-  'COURT', 'COVER', 'CRAFT', 'CRASH', 'CREAM', 'CRIME', 'CROSS', 'CROWD',
-  'CROWN', 'CURVE', 'CYCLE', 'DAILY', 'DANCE', 'DATED', 'DEALT', 'DEATH',
-  'DEBUT', 'DELAY', 'DEPTH', 'DOING', 'DOUBT', 'DOZEN', 'DRAFT', 'DRAMA',
-  'DRAWN', 'DREAM', 'DRESS', 'DRINK', 'DRIVE', 'DROVE', 'DYING', 'EAGER',
-  'EARLY', 'EARTH', 'EIGHT', 'ELITE', 'EMPTY', 'ENEMY', 'ENJOY', 'ENTER',
-  'ENTRY', 'EQUAL', 'ERROR', 'EVENT', 'EVERY', 'EXACT', 'EXIST', 'EXTRA',
-  'FAITH', 'FALSE', 'FAULT', 'FIBER', 'FIELD', 'FIFTH', 'FIFTY', 'FIGHT',
-  'FINAL', 'FIRST', 'FIXED', 'FLASH', 'FLEET', 'FLOOR', 'FLUID', 'FOCUS',
-  'FORCE', 'FORTH', 'FORTY', 'FORUM', 'FOUND', 'FRAME', 'FRANK', 'FRAUD',
-  'FRESH', 'FRONT', 'FRUIT', 'FULLY', 'FUNNY', 'GIANT', 'GIVEN', 'GLASS',
-  'GLOBE', 'GOING', 'GRACE', 'GRADE', 'GRAND', 'GRANT', 'GRASS', 'GRAVE',
-  'GREAT', 'GREEN', 'GROSS', 'GROUP', 'GROWN', 'GUARD', 'GUESS', 'GUEST',
-  'GUIDE', 'HAPPY', 'HARRY', 'HEART', 'HEAVY', 'HENCE', 'HENRY', 'HORSE',
-  'HOTEL', 'HOUSE', 'HUMAN', 'IDEAL', 'IMAGE', 'INDEX', 'INNER', 'INPUT',
-  'ISSUE', 'JAPAN', 'JIMMY', 'JOINT', 'JONES', 'JUDGE', 'KNOWN', 'LABEL',
-  'LARGE', 'LASER', 'LATER', 'LAUGH', 'LAYER', 'LEARN', 'LEASE', 'LEAST',
-  'LEAVE', 'LEGAL', 'LEVEL', 'LEWIS', 'LIGHT', 'LIMIT', 'LINKS', 'LIVES',
-  'LOCAL', 'LOOSE', 'LOWER', 'LUCKY', 'LUNCH', 'LYING', 'MAGIC', 'MAJOR',
-  'MAKER', 'MARCH', 'MARIA', 'MATCH', 'MAYBE', 'MAYOR', 'MEANT', 'MEDIA',
-  'METAL', 'MIGHT', 'MINOR', 'MINUS', 'MIXED', 'MODEL', 'MONEY', 'MONTH',
-  'MORAL', 'MOTOR', 'MOUNT', 'MOUSE', 'MOUTH', 'MOVED', 'MOVIE', 'MUSIC',
-  'NEEDS', 'NEVER', 'NEWLY', 'NIGHT', 'NOISE', 'NORTH', 'NOTED', 'NOVEL',
-  'NURSE', 'OCCUR', 'OCEAN', 'OFFER', 'OFFIC', 'ORDER', 'OTHER', 'OUGHT',
-  'PAINT', 'PANEL', 'PAPER', 'PARTY', 'PEACE', 'PETER', 'PHASE', 'PHONE',
-  'PHOTO', 'PIECE', 'PILOT', 'PITCH', 'PLACE', 'PLAIN', 'PLANE', 'PLANT',
-  'PLATE', 'POINT', 'POUND', 'POWER', 'PRESS', 'PRICE', 'PRIDE', 'PRIME',
-  'PRINT', 'PRIOR', 'PRIZE', 'PROOF', 'PROUD', 'PROVE', 'QUEEN', 'QUICK',
-  'QUIET', 'QUITE', 'RADIO', 'RAISE', 'RANGE', 'RAPID', 'RATIO', 'REACH',
-  'READY', 'REALM', 'REBEL', 'REFER', 'RELAX', 'REPLY', 'RIGHT', 'RIVAL',
-  'RIVER', 'ROBIN', 'ROGER', 'ROMAN', 'ROUGH', 'ROUND', 'ROUTE', 'ROYAL',
-  'RURAL', 'SADLY', 'SAFER', 'SALLY', 'SALON', 'SAUCE', 'SCALE', 'SCENE',
-  'SCOPE', 'SCORE', 'SENSE', 'SERVE', 'SEVEN', 'SHALL', 'SHAPE', 'SHARE',
-  'SHARP', 'SHEET', 'SHELF', 'SHELL', 'SHIFT', 'SHIRT', 'SHOCK', 'SHOOT',
-  'SHORT', 'SHOWN', 'SIGHT', 'SINCE', 'SIXTH', 'SIXTY', 'SIZED', 'SKILL',
-  'SLEEP', 'SLIDE', 'SMALL', 'SMART', 'SMILE', 'SMITH', 'SMOKE', 'SOLID',
-  'SOLVE', 'SORRY', 'SOUND', 'SOUTH', 'SPACE', 'SPARE', 'SPEAK', 'SPEED',
-  'SPEND', 'SPENT', 'SPLIT', 'SPOKE', 'SPORT', 'STAFF', 'STAGE', 'STAKE',
-  'STAND', 'START', 'STATE', 'STEAM', 'STEEL', 'STEEP', 'STEER', 'STEMS',
-  'STEPS', 'STICK', 'STILL', 'STOCK', 'STONE', 'STOOD', 'STORE', 'STORM',
-  'STORY', 'STRIP', 'STRUCK', 'STUCK', 'STUDY', 'STUFF', 'STYLE', 'SUGAR',
-  'SUITE', 'SUPER', 'SWEET', 'TABLE', 'TAKEN', 'TASTE', 'TAXES', 'TEACH',
-  'TEETH', 'TERRY', 'TEXAS', 'THANK', 'THEFT', 'THEIR', 'THEME', 'THERE',
-  'THESE', 'THICK', 'THING', 'THINK', 'THIRD', 'THOSE', 'THREE', 'THREW',
-  'THROW', 'THUMB', 'TIGER', 'TIGHT', 'TIMER', 'TIRED', 'TITLE', 'TODAY',
-  'TOPIC', 'TOTAL', 'TOUCH', 'TOUGH', 'TOWER', 'TRACK', 'TRADE', 'TRAIN',
-  'TREAT', 'TREND', 'TRIAL', 'TRIBE', 'TRICK', 'TRIED', 'TRIES', 'TRUCK',
-  'TRULY', 'TRUNK', 'TRUST', 'TRUTH', 'TWICE', 'UNDER', 'UNDUE', 'UNION',
-  'UNITY', 'UNTIL', 'UPPER', 'UPSET', 'URBAN', 'USAGE', 'USUAL', 'VALID',
-  'VALUE', 'VIDEO', 'VIRUS', 'VISIT', 'VITAL', 'VOICE', 'WASTE', 'WATCH',
-  'WATER', 'WHEEL', 'WHERE', 'WHICH', 'WHILE', 'WHITE', 'WHOLE', 'WHOSE',
-  'WOMAN', 'WOMEN', 'WORLD', 'WORRY', 'WORSE', 'WORST', 'WORTH', 'WOULD',
-  'WOUND', 'WRITE', 'WRONG', 'WROTE', 'YIELD', 'YOUNG', 'YOUTH'
-]
+// Function to fetch words from a reliable source
+const fetchWordList = async () => {
+  try {
+    // Try to fetch from a reliable Wordle word list API
+    const response = await fetch('https://raw.githubusercontent.com/tabatkins/wordle-list/main/words')
+    if (response.ok) {
+      const text = await response.text()
+      const words = text.split('\n')
+        .map(word => word.trim().toUpperCase())
+        .filter(word => word.length === 5 && /^[A-Z]+$/.test(word))
+      return words
+    }
+  } catch (error) {
+    // Fallback to local word list
+  }
+  
+  // Fallback: Use a comprehensive 5-letter word list
+  return [
+    'ABOUT', 'ABOVE', 'ABUSE', 'ACTOR', 'ACUTE', 'ADMIT', 'ADOPT', 'ADULT', 'AFTER', 'AGAIN', 'AGENT', 'AGREE',
+    'AHEAD', 'ALARM', 'ALBUM', 'ALERT', 'ALIKE', 'ALIVE', 'ALLOW', 'ALONE', 'ALONG', 'ALTER', 'AMONG', 'ANGER',
+    'ANGLE', 'ANGRY', 'APART', 'APPLE', 'APPLY', 'ARENA', 'ARGUE', 'ARISE', 'ARRAY', 'ASIDE', 'ASSET', 'AUDIO',
+    'AUDIT', 'AVOID', 'AWARD', 'AWARE', 'BADLY', 'BAKER', 'BASES', 'BASIC', 'BASIS', 'BEACH', 'BEGAN', 'BEGIN',
+    'BEING', 'BELOW', 'BENCH', 'BILLY', 'BIRTH', 'BLACK', 'BLAME', 'BLIND', 'BLOCK', 'BLOOD', 'BOARD', 'BOOST',
+    'BOOTH', 'BOUND', 'BRAIN', 'BRAND', 'BREAD', 'BREAK', 'BREED', 'BRIEF', 'BRING', 'BROAD', 'BROKE', 'BROWN',
+    'BUILD', 'BUILT', 'BUYER', 'CABLE', 'CALIF', 'CARRY', 'CATCH', 'CAUSE', 'CHAIN', 'CHAIR', 'CHART', 'CHASE',
+    'CHEAP', 'CHECK', 'CHEST', 'CHIEF', 'CHILD', 'CHINA', 'CHOSE', 'CIVIL', 'CLAIM', 'CLASS', 'CLEAN', 'CLEAR',
+    'CLICK', 'CLIMB', 'CLOCK', 'CLOSE', 'COACH', 'COAST', 'COULD', 'COUNT', 'COURT', 'COVER', 'CRAFT', 'CRASH',
+    'CREAM', 'CRIME', 'CROSS', 'CROWD', 'CROWN', 'CURVE', 'CYCLE', 'DAILY', 'DANCE', 'DATED', 'DEALT', 'DEATH',
+    'DEBUT', 'DELAY', 'DEPTH', 'DOING', 'DOUBT', 'DOZEN', 'DRAFT', 'DRAMA', 'DRAWN', 'DREAM', 'DRESS', 'DRINK',
+    'DRIVE', 'DROVE', 'DYING', 'EAGER', 'EARLY', 'EARTH', 'EIGHT', 'ELITE', 'EMPTY', 'ENEMY', 'ENJOY', 'ENTER',
+    'ENTRY', 'EQUAL', 'ERROR', 'EVENT', 'EVERY', 'EXACT', 'EXIST', 'EXTRA', 'FAITH', 'FALSE', 'FAULT', 'FIBER',
+    'FIELD', 'FIFTH', 'FIFTY', 'FIGHT', 'FINAL', 'FIRST', 'FIXED', 'FLASH', 'FLEET', 'FLOOR', 'FLUID', 'FOCUS',
+    'FORCE', 'FORTH', 'FORTY', 'FORUM', 'FOUND', 'FRAME', 'FRANK', 'FRAUD', 'FRESH', 'FRONT', 'FRUIT', 'FULLY',
+    'FUNNY', 'GIANT', 'GIVEN', 'GLASS', 'GLOBE', 'GOING', 'GRACE', 'GRADE', 'GRAND', 'GRANT', 'GRASS', 'GRAVE',
+    'GREAT', 'GREEN', 'GROSS', 'GROUP', 'GROWN', 'GUARD', 'GUESS', 'GUEST', 'GUIDE', 'HARRY', 'HEAVY', 'HENCE',
+    'HENRY', 'HORSE', 'HOTEL', 'HOUSE', 'HUMAN', 'IDEAL', 'IMAGE', 'INDEX', 'INNER', 'ISSUE', 'JAPAN', 'JIMMY',
+    'JOINT', 'JONES', 'JUDGE', 'KNOWN', 'LABEL', 'LARGE', 'LASER', 'LATER', 'LAUGH', 'LAYER', 'LEARN', 'LEASE',
+    'LEAST', 'LEAVE', 'LEGAL', 'LEWIS', 'LIMIT', 'LINKS', 'LIVES', 'LOCAL', 'LOOSE', 'LOWER', 'LUCKY', 'LUNCH',
+    'LYING', 'MAGIC', 'MAJOR', 'MAKER', 'MARCH', 'MARIA', 'MAYBE', 'MAYOR', 'MEDIA', 'METAL', 'MIGHT', 'MINOR',
+    'MINUS', 'MIXED', 'MODEL', 'MONEY', 'MONTH', 'MORAL', 'MOTOR', 'MOUNT', 'MOUSE', 'MOUTH', 'MOVED', 'NEEDS',
+    'NEVER', 'NEWLY', 'NIGHT', 'NOISE', 'NORTH', 'NOTED', 'NOVEL', 'NURSE', 'OCCUR', 'OCEAN', 'OFFER', 'OFFIC',
+    'ORDER', 'OTHER', 'OUGHT', 'PAINT', 'PANEL', 'PAPER', 'PETER', 'PHASE', 'PHONE', 'PHOTO', 'PIECE', 'PILOT',
+    'PITCH', 'PLACE', 'PLAIN', 'PLANE', 'PLANT', 'PLATE', 'POUND', 'PRESS', 'PRICE', 'PRIDE', 'PRIME', 'PRINT',
+    'PRIOR', 'PRIZE', 'PROOF', 'PROUD', 'PROVE', 'QUEEN', 'QUICK', 'QUIET', 'QUITE', 'RADIO', 'RAISE', 'RANGE',
+    'RAPID', 'RATIO', 'REACH', 'READY', 'REALM', 'REBEL', 'REFER', 'RELAX', 'REPLY', 'RIVAL', 'ROBIN', 'ROGER',
+    'ROMAN', 'ROUGH', 'ROUTE', 'ROYAL', 'RURAL', 'SADLY', 'SAFER', 'SALLY', 'SALON', 'SAUCE', 'SCALE', 'SCENE',
+    'SCOPE', 'SCORE', 'SENSE', 'SEVEN', 'SHALL', 'SHAPE', 'SHARE', 'SHARP', 'SHEET', 'SHELF', 'SHELL', 'SHIFT',
+    'SHIRT', 'SHOCK', 'SHOOT', 'SHOWN', 'SIGHT', 'SINCE', 'SIXTH', 'SIXTY', 'SIZED', 'SKILL', 'SLEEP', 'SLIDE',
+    'SMART', 'SMITH', 'SMOKE', 'SORRY', 'SOUTH', 'SPEAK', 'SPEED', 'SPEND', 'SPENT', 'SPLIT', 'SPORT', 'STAFF',
+    'STAGE', 'STAKE', 'STAND', 'STEAM', 'STEEL', 'STEEP', 'STEER', 'STEMS', 'STEPS', 'STICK', 'STILL', 'STOCK',
+    'STONE', 'STOOD', 'STORE', 'STORM', 'STORY', 'STUCK', 'STUDY', 'STUFF', 'SUGAR', 'SUITE', 'SUPER', 'SWEET',
+    'TABLE', 'TAKEN', 'TASTE', 'TAXES', 'TEACH', 'TEETH', 'TERRY', 'TEXAS', 'THANK', 'THEFT', 'THEIR', 'THEME',
+    'THERE', 'THESE', 'THICK', 'THING', 'THINK', 'THIRD', 'THOSE', 'THREE', 'THREW', 'THROW', 'THUMB', 'TIGER',
+    'TIGHT', 'TIMER', 'TIRED', 'TITLE', 'TOPIC', 'TOTAL', 'TOUCH', 'TOUGH', 'TOWER', 'TRACK', 'TRADE', 'TRAIN',
+    'TREAT', 'TREND', 'TRIAL', 'TRIBE', 'TRICK', 'TRIED', 'TRIES', 'TRUCK', 'TRULY', 'TRUNK', 'TRUST', 'TRUTH',
+    'TWICE', 'UNDER', 'UNDUE', 'UNION', 'UNITY', 'UNTIL', 'UPPER', 'UPSET', 'URBAN', 'USAGE', 'USUAL', 'VALID',
+    'VALUE', 'VIDEO', 'VIRUS', 'VISIT', 'VITAL', 'WASTE', 'WATCH', 'WHEEL', 'WHILE', 'WHITE', 'WHOLE', 'WHOSE',
+    'WOMEN', 'WORRY', 'WORSE', 'WORST', 'WORTH', 'WOUND', 'WRITE', 'WRONG', 'WROTE'
+  ]
+}
+
+// Global word list state
+let DEFAULT_WORDS = []
+let isWordListLoaded = false
 
 // Simple game logic for demo (in a real app, this would communicate with the Python backend)
 const calculateResult = (guess, answer) => {
@@ -100,7 +96,7 @@ const calculateResult = (guess, answer) => {
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState({
-    gameState: 'playing',
+    gameState: 'waiting',
     currentRound: 0,
     maxRounds: 6,
     remainingRounds: 6,
@@ -109,17 +105,39 @@ export const useGameState = () => {
     answer: null,
     isGameOver: false,
     letterStates: {},
-    candidatesRemaining: null
+    candidatesRemaining: null,
+    gameMode: null
   })
 
   const [currentAnswer, setCurrentAnswer] = useState(null)
-  const [candidateWords, setCandidateWords] = useState([...DEFAULT_WORDS])
+  const [candidateWords, setCandidateWords] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Load word list on component mount
+  useEffect(() => {
+    const loadWordList = async () => {
+      if (!isWordListLoaded) {
+        DEFAULT_WORDS = await fetchWordList()
+        isWordListLoaded = true
+      }
+      setCandidateWords([...DEFAULT_WORDS])
+      setIsLoading(false)
+    }
+    
+    loadWordList()
+  }, [])
 
   const startGame = useCallback((mode) => {
     let answer
     if (mode === 'cheating') {
       // For cheating mode, we'll determine the answer after the first guess
       answer = null
+    } else if (mode === 'server') {
+      // For server mode, we'll use a simple implementation for now
+      answer = DEFAULT_WORDS[Math.floor(Math.random() * DEFAULT_WORDS.length)]
+    } else if (mode === 'multiplayer') {
+      // For multiplayer mode, we'll use a simple implementation for now
+      answer = DEFAULT_WORDS[Math.floor(Math.random() * DEFAULT_WORDS.length)]
     } else {
       // For single player, pick a random word
       answer = DEFAULT_WORDS[Math.floor(Math.random() * DEFAULT_WORDS.length)]
@@ -138,12 +156,18 @@ export const useGameState = () => {
       answer: null,
       isGameOver: false,
       letterStates: {},
-      candidatesRemaining: mode === 'cheating' ? DEFAULT_WORDS.length : null
+      candidatesRemaining: mode === 'cheating' ? DEFAULT_WORDS.length : null,
+      gameMode: mode
     })
   }, [])
 
   const makeGuess = useCallback((guess) => {
     const upperGuess = guess.toUpperCase()
+    
+    // Check if word list is loaded
+    if (DEFAULT_WORDS.length === 0) {
+      return { success: false, error: 'Word list not loaded yet' }
+    }
     
     // Validate guess
     if (!DEFAULT_WORDS.includes(upperGuess)) {
@@ -152,7 +176,7 @@ export const useGameState = () => {
 
     let result
     let answer = currentAnswer
-
+    
     if (gameState.gameState === 'cheating' && currentAnswer === null) {
       // This is the first guess in cheating mode
       // Find the worst possible result
@@ -182,6 +206,12 @@ export const useGameState = () => {
         return wordResult.every((r, i) => r === worstResult[i])
       })
       setCandidateWords(newCandidates)
+    } else if (gameState.gameMode === 'server') {
+      // Server mode - simulate network communication
+      result = calculateResult(upperGuess, answer)
+    } else if (gameState.gameMode === 'multiplayer') {
+      // Multiplayer mode - simulate multiple players
+      result = calculateResult(upperGuess, answer)
     } else {
       result = calculateResult(upperGuess, answer)
     }
@@ -248,6 +278,8 @@ export const useGameState = () => {
     gameState,
     startGame,
     makeGuess,
-    resetGame
+    resetGame,
+    isLoading,
+    wordListSize: DEFAULT_WORDS.length
   }
 } 

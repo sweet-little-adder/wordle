@@ -5,110 +5,65 @@ const GameModeSelector = ({ onSelectMode }) => {
     {
       id: 'single',
       title: 'Single Player',
-      description: 'Classic Wordle experience. Guess the word in 6 tries.',
-      icon: '🎯',
-      color: 'bg-blue-600 hover:bg-blue-700',
+      description: '',
+      color: 'bg-pink-500 hover:bg-pink-600',
+      status: 'Ready'
+    },
+    {
+      id: 'multiplayer',
+      title: 'Multiplayer',
+      description: '',
+      color: 'bg-pink-700 hover:bg-pink-800',
       status: 'Ready'
     },
     {
       id: 'cheating',
       title: 'Cheating Host',
       description: 'The host adapts the answer to make it harder. Like Absurdle!',
-      icon: '😈',
-      color: 'bg-red-600 hover:bg-red-700',
+      color: 'bg-pink-600 hover:bg-pink-700',
       status: 'Ready'
     },
     {
       id: 'server',
       title: 'Server/Client',
       description: 'Play over the network with client-server architecture.',
-      icon: '🌐',
-      color: 'bg-green-600 hover:bg-green-700',
-      status: 'Coming Soon'
-    },
-    {
-      id: 'multiplayer',
-      title: 'Multiplayer',
-      description: 'Compete against other players in real-time.',
-      icon: '👥',
-      color: 'bg-purple-600 hover:bg-purple-700',
-      status: 'Coming Soon'
+      color: 'bg-pink-400 hover:bg-pink-500',
+      status: 'Ready'
     }
   ]
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-white mb-4">
-          Choose Your Game Mode
-        </h2>
-        <p className="text-gray-300 text-lg">
-          Select from different Wordle game modes and challenges
-        </p>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <div className="flex flex-col items-center gap-4 max-w-sm mx-auto">
         {gameModes.map((mode) => (
-          <div
-            key={mode.id}
-            className={`relative bg-gray-800 rounded-lg p-6 border border-gray-700 transition-all duration-300 hover:scale-105 ${
-              mode.status === 'Coming Soon' ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:border-gray-500'
-            }`}
-            onClick={() => mode.status === 'Ready' && onSelectMode(mode.id)}
-          >
-            <div className="flex items-start space-x-4">
-              <div className="text-4xl">{mode.icon}</div>
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-white mb-2">
+          <div key={mode.id} className="relative group w-full flex justify-center">
+            <button
+              className={`w-1/2 p-4 rounded-full transition-all duration-300 hover:scale-105 ${
+                mode.status === 'Coming Soon' 
+                  ? 'opacity-60 cursor-not-allowed bg-gray-600' 
+                  : 'cursor-pointer bg-pink-500 hover:bg-pink-600 text-white font-semibold text-lg'
+              }`}
+              onClick={() => mode.status === 'Ready' && onSelectMode(mode.id)}
+              disabled={mode.status !== 'Ready'}
+            >
+              <div className="text-center">
+                <h3 className="text-xl font-bold">
                   {mode.title}
                 </h3>
-                <p className="text-gray-300 mb-4">
-                  {mode.description}
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                    mode.status === 'Ready' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {mode.status}
-                  </span>
-                  {mode.status === 'Ready' && (
-                    <button
-                      className={`px-4 py-2 rounded-md text-white font-medium transition-colors ${mode.color}`}
-                    >
-                      Play Now
-                    </button>
-                  )}
-                </div>
               </div>
-            </div>
+            </button>
+            
+            {/* Hover Tooltip */}
+            {mode.description && (
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                {mode.description}
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+              </div>
+            )}
           </div>
         ))}
-      </div>
-
-      <div className="mt-12 text-center">
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-xl font-semibold text-white mb-3">
-            🎮 How to Play
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-300">
-            <div>
-              <div className="font-semibold text-white mb-2">Guess the Word</div>
-              <p>Enter a 5-letter word and press Enter</p>
-            </div>
-            <div>
-              <div className="font-semibold text-white mb-2">Get Feedback</div>
-              <p>Green = correct letter & position<br/>
-                 Yellow = correct letter, wrong position<br/>
-                 Gray = letter not in word</p>
-            </div>
-            <div>
-              <div className="font-semibold text-white mb-2">Win or Lose</div>
-              <p>Guess correctly within 6 tries to win!</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )

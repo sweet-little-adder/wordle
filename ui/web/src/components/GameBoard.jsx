@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import WordleGrid from './WordleGrid'
 import Keyboard from './Keyboard'
-import GameStats from './GameStats'
 import GameOverModal from './GameOverModal'
 
 const GameBoard = ({ gameState, onMakeGuess, gameMode }) => {
   const [currentGuess, setCurrentGuess] = useState('')
-  const [showStats, setShowStats] = useState(false)
   const [showGameOver, setShowGameOver] = useState(false)
+  const [showInvalidWord, setShowInvalidWord] = useState(false)
+  const [shakeAnimation, setShakeAnimation] = useState(false)
 
   useEffect(() => {
     if (gameState.isGameOver) {
@@ -15,15 +15,38 @@ const GameBoard = ({ gameState, onMakeGuess, gameMode }) => {
     }
   }, [gameState.isGameOver])
 
+  const showInvalidWordFeedback = () => {
+    setShowInvalidWord(true)
+    setShakeAnimation(true)
+    
+    // Hide the tooltip after 2 seconds
+    setTimeout(() => {
+      setShowInvalidWord(false)
+    }, 2000)
+    
+    // Remove shake animation after animation completes
+    setTimeout(() => {
+      setShakeAnimation(false)
+    }, 500)
+  }
+
+  const handleGuess = (guess) => {
+    const result = onMakeGuess(guess)
+    
+    if (result.success) {
+      setCurrentGuess('')
+    } else {
+      // Show invalid word feedback
+      showInvalidWordFeedback()
+    }
+  }
+
   const handleKeyPress = (key) => {
     if (gameState.isGameOver) return
 
     if (key === 'ENTER') {
       if (currentGuess.length === 5) {
-        const result = onMakeGuess(currentGuess)
-        if (result.success) {
-          setCurrentGuess('')
-        }
+        handleGuess(currentGuess)
       }
     } else if (key === 'BACKSPACE') {
       setCurrentGuess(prev => prev.slice(0, -1))
@@ -40,10 +63,7 @@ const GameBoard = ({ gameState, onMakeGuess, gameMode }) => {
     if (key === 'ENTER') {
       e.preventDefault()
       if (currentGuess.length === 5) {
-        const result = onMakeGuess(currentGuess)
-        if (result.success) {
-          setCurrentGuess('')
-        }
+        handleGuess(currentGuess)
       }
     } else if (key === 'BACKSPACE') {
       e.preventDefault()
@@ -57,7 +77,7 @@ const GameBoard = ({ gameState, onMakeGuess, gameMode }) => {
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentGuess, gameState.isGameOver])
+  }, [currentGuess, gameState.isGameOver, onMakeGuess])
 
   return (
     <div className="max-w-md mx-auto space-y-8">
@@ -71,6 +91,12 @@ const GameBoard = ({ gameState, onMakeGuess, gameMode }) => {
             {gameMode === 'cheating' && gameState.candidatesRemaining && (
               <span>🎯 {gameState.candidatesRemaining} candidates</span>
             )}
+            {gameMode === 'server' && (
+              <span>🌐 Connected to server</span>
+            )}
+            {gameMode === 'multiplayer' && (
+              <span>👥 Multiplayer mode</span>
+            )}
           </div>
         </div>
       </div>
@@ -81,17 +107,19 @@ const GameBoard = ({ gameState, onMakeGuess, gameMode }) => {
         results={gameState.results}
         currentGuess={currentGuess}
         maxRounds={gameState.maxRounds}
+        shakeAnimation={shakeAnimation}
       />
 
-      {/* Game Stats Button */}
-      <div className="text-center">
-        <button
-          onClick={() => setShowStats(true)}
-          className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition-colors text-sm"
-        >
-          📊 View Stats
-        </button>
-      </div>
+      {/* Invalid Word Tooltip */}
+      {showInvalidWord && (
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+          <div className="bg-pink-500 text-white px-4 py-2 rounded-full shadow-lg animate-bounce">
+            <div className="text-center font-medium">
+              Not in word list
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Keyboard */}
       <Keyboard
@@ -100,13 +128,6 @@ const GameBoard = ({ gameState, onMakeGuess, gameMode }) => {
       />
 
       {/* Modals */}
-      {showStats && (
-        <GameStats
-          gameState={gameState}
-          onClose={() => setShowStats(false)}
-        />
-      )}
-
       {showGameOver && (
         <GameOverModal
           gameState={gameState}

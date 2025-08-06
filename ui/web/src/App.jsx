@@ -6,7 +6,7 @@ import { useGameState } from './hooks/useGameState'
 
 function App() {
   const [gameMode, setGameMode] = useState(null)
-  const { gameState, startGame, makeGuess, resetGame } = useGameState()
+  const { gameState, startGame, makeGuess, resetGame, isLoading, wordListSize } = useGameState()
 
   const handleGameModeSelect = (mode) => {
     setGameMode(mode)
@@ -18,13 +18,26 @@ function App() {
     resetGame()
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-wordle-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-2xl text-white mb-4">Loading Wordle...</div>
+          <div className="text-gray-300">Fetching word list from API</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-wordle-dark">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         {!gameMode ? (
-          <GameModeSelector onSelectMode={handleGameModeSelect} />
+          <div>
+            <GameModeSelector onSelectMode={handleGameModeSelect} />
+          </div>
         ) : (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -33,7 +46,7 @@ function App() {
               </h2>
               <button
                 onClick={handleReset}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md transition-colors"
+                className="px-4 py-2 bg-pink-600 hover:bg-pink-700 rounded-md transition-colors"
               >
                 New Game
               </button>

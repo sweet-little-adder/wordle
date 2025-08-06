@@ -1,184 +1,162 @@
-# Wordle Project
+# Wordle Game with Multiple Game Modes
 
-A comprehensive implementation of the Wordle game with support for multiple game modes and features.
+A modern implementation of the popular Wordle game with multiple game modes, built with React frontend and Python backend.
 
-## Assignment Overview
-
-This project implements a Wordle game with the following tasks:
-
-1. **Task 1: Normal Wordle** - Basic Wordle game with configurable settings
-2. **Task 2: Server/Client Wordle** - Network-based Wordle with client-server architecture
-3. **Task 3: Host Cheating Wordle** - Absurdle-style cheating host that adapts answers
-4. **Task 4: Multi-player Wordle** - Multiplayer version with player interaction
-
-## Features
-
-### Core Features
-- 5-letter word guessing game
-- Configurable word list and maximum rounds
-- Hit/Present/Miss scoring system
-- Win/lose condition detection
-- Clean, modular architecture
+## 🌟 Features
 
 ### Game Modes
 - **Single Player**: Classic Wordle experience
-- **Server/Client**: Network-based gameplay
-- **Cheating Host**: Host adapts answers based on player guesses
-- **Multiplayer**: Multiple players competing
+- **Multiplayer**: Compete against other players in real-time
+- **Cheating Host**: The host adapts the answer to make it harder (like Absurdle!)
+- **Server/Client**: Play over the network with client-server architecture
 
-## Project Structure
+### Technical Features
+- **Modern UI**: Beautiful pinkish theme with gradients and animations
+- **Word Validation**: Comprehensive 5-letter word list with API integration
+- **Responsive Design**: Works on desktop and mobile devices
+- **Real-time Feedback**: Visual feedback for invalid words with shake animations
+- **Accessibility**: Keyboard and mouse input support
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js (v14 or higher)
+- Python 3.8+
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd wordle
+   ```
+
+2. **Install Python dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Install frontend dependencies**
+   ```bash
+   cd ui/web
+   npm install
+   ```
+
+4. **Start the development server**
+   ```bash
+   # Terminal 1: Start the frontend
+   cd ui/web
+   npm run dev
+   
+   # Terminal 2: Start the backend (optional)
+   cd ../..
+   python api_server.py
+   ```
+
+5. **Open your browser**
+   Navigate to `http://localhost:3000`
+
+## 🎮 How to Play
+
+1. **Choose a game mode** from the main menu
+2. **Guess 5-letter words** by typing and pressing Enter
+3. **Get feedback**:
+   - 🟩 Green: Correct letter in correct position
+   - 🟨 Yellow: Correct letter in wrong position  
+   - ⬜ Gray: Letter not in word
+4. **Win** by guessing the word in 6 tries or less!
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 18** with Vite
+- **Tailwind CSS** for styling
+- **Custom hooks** for state management
+- **Responsive design** with mobile-first approach
+
+### Backend
+- **Python 3.8+** with Flask
+- **Multiple game modes** with extensible architecture
+- **Word validation** and game logic
+- **RESTful API** for server-client communication
+
+### Development Tools
+- **Pytest** for testing
+- **ESLint** for code quality
+- **Hot Module Replacement** for fast development
+
+## 📁 Project Structure
 
 ```
 wordle/
-├── src/
-│   ├── core/           # Core game logic
-│   ├── game_modes/     # Different game implementations
-│   ├── utils/          # Utility functions
-│   └── config/         # Configuration files
-├── ui/
-│   └── web/            # React + Tailwind CSS web interface
-├── data/               # Word lists and game data
-├── tests/              # Unit tests
-├── docs/               # Documentation
-└── examples/           # Example usage and demonstrations
+├── src/                    # Python backend
+│   ├── core/              # Core game logic
+│   ├── game_modes/        # Different game modes
+│   ├── ui/                # Text-based UI
+│   └── utils/             # Utility functions
+├── ui/web/                # React frontend
+│   ├── src/
+│   │   ├── components/    # React components
+│   │   ├── hooks/         # Custom React hooks
+│   │   └── utils/         # Frontend utilities
+│   └── public/            # Static assets
+├── tests/                 # Test files
+├── requirements.txt       # Python dependencies
+└── README.md             # This file
 ```
 
-## Requirements
+## 🧪 Testing
 
-### Python Backend
-- Python 3.8+
-- No external dependencies for basic functionality
-- Optional: `flask` for server/client mode
-
-### Web Interface
-- Node.js 16+
-- npm or yarn
-
-## Installation
-
-1. Clone the repository:
+### Run Python Tests
 ```bash
-git clone <repository-url>
-cd wordle
+# Install test dependencies
+pip install pytest pytest-cov
+
+# Run all tests
+python -m pytest
+
+# Run with coverage
+python -m pytest --cov=src --cov-report=html
 ```
 
-2. Install Python dependencies (optional):
-```bash
-pip install -r requirements.txt
-```
-
-3. Install web interface dependencies:
+### Run Frontend Tests
 ```bash
 cd ui/web
-npm install
+npm test
 ```
 
-## Usage
+## 🎨 Customization
 
-### Web Interface (Recommended)
-The project includes a modern React web interface with Tailwind CSS:
+### Changing the Theme
+The app uses a pinkish theme by default. To customize:
 
-```bash
-# Navigate to the web UI directory
-cd ui/web
+1. Edit `ui/web/tailwind.config.js` for color changes
+2. Modify `ui/web/src/index.css` for styling updates
 
-# Install dependencies
-npm install
+### Adding New Game Modes
+1. Create a new class in `src/game_modes/`
+2. Extend `BaseGameMode` class
+3. Add the mode to the frontend selector
 
-# Start the development server
-npm run dev
-```
-
-Then open your browser to `http://localhost:3000` to play the game with a beautiful, responsive interface.
-
-### Command Line Interface
-
-#### Task 1: Normal Wordle
-```bash
-python src/main.py --mode single
-```
-
-#### Task 2: Server/Client Wordle
-```bash
-# Start server
-python src/main.py --mode server --port 8080
-
-# Start client
-python src/main.py --mode client --host localhost --port 8080
-```
-
-#### Task 3: Cheating Host Wordle
-```bash
-python src/main.py --mode cheating
-```
-
-#### Task 4: Multiplayer Wordle
-```bash
-python src/main.py --mode multiplayer --players 2
-```
-
-## Configuration
-
-The game can be configured through:
-- Command line arguments
-- Configuration files in `src/config/`
-- Environment variables
-
-### Key Configuration Options
-- `max_rounds`: Maximum number of guessing rounds (default: 6)
-- `word_list`: Path to word list file
-- `server_port`: Port for server/client mode
-- `players`: Number of players for multiplayer mode
-
-## Game Rules
-
-### Scoring System
-- **Hit (Green)**: Letter is in the correct position
-- **Present (Yellow)**: Letter is in the word but wrong position
-- **Miss (Gray)**: Letter is not in the word
-
-### Win Conditions
-- **Single Player**: Guess the word within max rounds
-- **Multiplayer**: First player to guess correctly, or best score after max rounds
-- **Cheating Host**: Same as single player, but host adapts answers
-
-## Development
-
-### Running Tests
-```bash
-python -m pytest tests/
-```
-
-### Code Style
-This project follows PEP 8 style guidelines.
-
-## Architecture Decisions
-
-### Design Patterns
-- **Strategy Pattern**: Different game modes implement the same interface
-- **Factory Pattern**: Game mode creation based on configuration
-- **Observer Pattern**: For multiplayer game state updates
-
-### Trade-offs Made
-1. **Language Choice**: Python for rapid development and readability
-2. **Architecture**: Modular design for easy extension
-3. **Dependencies**: Minimal external dependencies for portability
-4. **UI**: Text-based interface for simplicity and cross-platform compatibility
-
-## Documentation
-
-- `docs/architecture.md`: Detailed architecture documentation
-- `docs/api.md`: API documentation for server/client mode
-- `docs/game_modes.md`: Detailed explanation of each game mode
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## License
+## 📝 License
 
-This project is created for educational purposes as part of a programming assignment. 
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by the original Wordle game
+- Built with modern web technologies
+- Designed for educational purposes
+
+---
+
+**Enjoy playing Wordle! 🎉** 
