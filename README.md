@@ -96,18 +96,4 @@ wordle/
 └── README.md             # This file
 ```
 
-## 🧪 Testing
-
-### Run Python Tests
-```bash
-# Install test dependencies
-pip install pytest pytest-cov
-
-# Run all tests
-python -m pytest
-
-# Run with coverage
-python -m pytest --cov=src --cov-report=html
-```
-
 **Enjoy playing Wordle! 🎉** 
