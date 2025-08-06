@@ -28,7 +28,7 @@ A modern implementation of the popular Wordle game with multiple game modes, bui
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/sweet-little-adder/wordle
    cd wordle
    ```
 
@@ -56,16 +56,6 @@ A modern implementation of the popular Wordle game with multiple game modes, bui
 
 5. **Open your browser**
    Navigate to `http://localhost:3000`
-
-## 🎮 How to Play
-
-1. **Choose a game mode** from the main menu
-2. **Guess 5-letter words** by typing and pressing Enter
-3. **Get feedback**:
-   - 🟩 Green: Correct letter in correct position
-   - 🟨 Yellow: Correct letter in wrong position  
-   - ⬜ Gray: Letter not in word
-4. **Win** by guessing the word in 6 tries or less!
 
 ## 🛠️ Technology Stack
 
