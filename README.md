@@ -110,43 +110,4 @@ python -m pytest
 python -m pytest --cov=src --cov-report=html
 ```
 
-### Run Frontend Tests
-```bash
-cd ui/web
-npm test
-```
-
-## 🎨 Customization
-
-### Changing the Theme
-The app uses a pinkish theme by default. To customize:
-
-1. Edit `ui/web/tailwind.config.js` for color changes
-2. Modify `ui/web/src/index.css` for styling updates
-
-### Adding New Game Modes
-1. Create a new class in `src/game_modes/`
-2. Extend `BaseGameMode` class
-3. Add the mode to the frontend selector
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- Inspired by the original Wordle game
-- Built with modern web technologies
-- Designed for educational purposes
-
----
-
 **Enjoy playing Wordle! 🎉** 
